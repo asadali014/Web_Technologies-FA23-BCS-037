@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Daraz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#0b0c15;--surface:#13141f;--card:#1a1b2e;--accent:#e63946;--green:#4ade80;--yellow:#fbbf24;--red:#f87171;--blue:#60a5fa;--text:#e2e8f0;--muted:#64748b;--border:rgba(255,255,255,.07);--sidebar:230px;--r:12px}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+    /* Sidebar */
+    .sidebar{width:var(--sidebar);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50}
+    .s-logo{padding:1.4rem 1.2rem;font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,var(--accent),#f4a261);-webkit-background-clip:text;-webkit-text-fill-color:transparent;border-bottom:1px solid var(--border)}
+    .s-label{font-size:.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding:1.1rem 1.2rem .35rem}
+    .sidebar nav{padding:.2rem .7rem;display:flex;flex-direction:column;gap:2px}
+    .sidebar nav a{display:flex;align-items:center;gap:.6rem;padding:.6rem .75rem;border-radius:8px;color:var(--muted);text-decoration:none;font-size:.85rem;font-weight:500;transition:background .2s,color .2s}
+    .sidebar nav a:hover{background:var(--card);color:var(--text)}
+    .sidebar nav a.active{background:rgba(230,57,70,.15);color:var(--accent)}
+    .s-foot{margin-top:auto;padding:1.1rem;border-top:1px solid var(--border)}
+    .s-foot a{color:var(--muted);font-size:.82rem;text-decoration:none;display:flex;align-items:center;gap:.5rem}
+    .s-foot a:hover{color:var(--text)}
+    /* Main */
+    .main{margin-left:var(--sidebar);flex:1;padding:2rem}
+    .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem}
+    .topbar h1{font-size:1.55rem;font-weight:800}
+    .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.2rem;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;text-decoration:none;border:none;transition:opacity .2s,transform .15s}
+    .btn:hover{opacity:.88;transform:translateY(-1px)}
+    .btn-primary{background:linear-gradient(135deg,var(--accent),#c1121f);color:#fff}
+    /* Stats */
+    .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-bottom:1.75rem}
+    .stat{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem}
+    .stat .s-icon{font-size:1.4rem;margin-bottom:.3rem}
+    .stat .s-lbl{font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+    .stat .s-val{font-size:1.65rem;font-weight:800;margin-top:.2rem}
+    .c-red .s-val{color:var(--accent)} .c-grn .s-val{color:var(--green)} .c-yel .s-val{color:var(--yellow)} .c-blu .s-val{color:var(--blue)}
+    /* Flash */
+    .flash{padding:.7rem 1.2rem;border-radius:8px;margin-bottom:1.2rem;font-size:.875rem;font-weight:500}
+    .flash.success{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);color:var(--green)}
+    .flash.error{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red)}
+    /* Table */
+    .tcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+    .thead2{padding:.9rem 1.25rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+    .thead2 h2{font-size:.95rem;font-weight:700}
+    .thead2 input{background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:.4rem .8rem;font-size:.82rem;outline:none;width:200px;font-family:inherit}
+    .thead2 input:focus{border-color:var(--accent)}
+    table{width:100%;border-collapse:collapse}
+    thead th{padding:.7rem 1rem;text-align:left;font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border)}
+    tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+    tbody tr:last-child{border-bottom:none}
+    tbody tr:hover{background:rgba(255,255,255,.025)}
+    td{padding:.7rem 1rem;font-size:.85rem;vertical-align:middle}
+    .td-img img{width:46px;height:38px;object-fit:cover;border-radius:6px}
+    .no-img{width:46px;height:38px;background:var(--surface);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+    .td-name{max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+    .cat-pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.68rem;font-weight:700;background:rgba(244,162,97,.15);color:#f4a261}
+    .s-ok{color:var(--green);font-weight:600} .s-low{color:var(--yellow);font-weight:600} .s-out{color:var(--red);font-weight:600}
+    .acts{display:flex;gap:.35rem}
+    .b-edit{padding:.32rem .75rem;background:rgba(96,165,250,.12);color:var(--blue);border:1px solid rgba(96,165,250,.2);border-radius:6px;font-size:.75rem;font-weight:600;cursor:pointer;text-decoration:none}
+    .b-edit:hover{background:rgba(96,165,250,.22)}
+    .b-del{padding:.32rem .75rem;background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.2);border-radius:6px;font-size:.75rem;font-weight:600;cursor:pointer}
+    .b-del:hover{background:rgba(248,113,113,.22)}
+    /* Modal */
+    .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center}
+    .overlay.active{display:flex}
+    .mbox{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;max-width:380px;width:90%;text-align:center;animation:pop .22s ease}
+    @keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+    .mbox .m-icon{font-size:2.8rem;margin-bottom:.8rem}
+    .mbox h3{font-size:1.1rem;font-weight:700;margin-bottom:.4rem}
+    .mbox p{font-size:.855rem;color:var(--muted);margin-bottom:1.4rem}
+    .m-acts{display:flex;gap:.65rem;justify-content:center}
+    .b-cancel{padding:.55rem 1.3rem;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:8px;font-size:.855rem;font-weight:600;cursor:pointer}
+    .b-confirm{padding:.55rem 1.3rem;background:var(--red);color:#fff;border:none;border-radius:8px;font-size:.855rem;font-weight:600;cursor:pointer}
+  </style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="s-logo">⚡ Daraz Admin</div>
+  <div class="s-label">Menu</div>
+  <nav>
+    <a href="/admin" class="active">📊 Dashboard</a>
+    <a href="/admin/products/new">➕ Add Product</a>
+    <a href="/products" target="_blank">🛍️ View Store</a>
+  </nav>
+  <div class="s-foot"><a href="/">🏠 Back to Home</a></div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <h1>Dashboard</h1>
+    <a href="/admin/products/new" class="btn btn-primary">➕ Add Product</a>
+  </div>
+
+  <% if (locals.flash) { %>
+    <div class="flash <%= flash.type %>"><%= flash.message %></div>
+  <% } %>
+
+  <div class="stats">
+    <div class="stat c-red"><div class="s-icon">📦</div><div class="s-lbl">Total Products</div><div class="s-val"><%= stats.total %></div></div>
+    <div class="stat c-grn"><div class="s-icon">🏷️</div><div class="s-lbl">Categories</div><div class="s-val"><%= stats.categories %></div></div>
+    <div class="stat c-yel"><div class="s-icon">⚠️</div><div class="s-lbl">Low Stock</div><div class="s-val"><%= stats.lowStock %></div></div>
+    <div class="stat c-blu"><div class="s-icon">💰</div><div class="s-lbl">Avg. Price</div><div class="s-val">$<%= stats.avgPrice %></div></div>
+  </div>
+
+  <div class="tcard">
+    <div class="thead2">
+      <h2>All Products (<%= stats.total %>)</h2>
+      <input type="text" id="ts" placeholder="🔍 Filter…" oninput="filterTable(this.value)">
+    </div>
+    <div style="overflow-x:auto">
+      <table id="pt">
+        <thead><tr><th>Img</th><th>Name</th><th>Category</th><th>Price</th><th>Rating</th><th>Stock</th><th>Actions</th></tr></thead>
+        <tbody>
+        <% products.forEach(p => {
+             let sc='s-ok', sl=p.stock;
+             if(p.stock===0){sc='s-out';sl='Out';}
+             else if(p.stock<=10){sc='s-low';}
+        %>
+          <tr>
+            <td><% if(p.image&&p.image.trim()){ %><img src="<%= p.image.startsWith('http')?p.image:'/'+p.image %>" alt=""><% }else{ %><div class="no-img">📦</div><% } %></td>
+            <td class="td-name" title="<%= p.name %>"><%= p.name %></td>
+            <td><span class="cat-pill"><%= p.category %></span></td>
+            <td><strong>$<%= p.price.toLocaleString() %></strong></td>
+            <td>⭐ <%= p.rating.toFixed(1) %></td>
+            <td class="<%= sc %>"><%= sl %></td>
+            <td><div class="acts">
+              <a href="/admin/products/<%= p._id %>/edit" class="b-edit">✏️ Edit</a>
+              <button class="b-del" onclick="confirmDel('<%= p._id %>','<%= p.name.replace(/'/g,`\\'`) %>')">🗑️ Delete</button>
+            </div></td>
+          </tr>
+        <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<div class="overlay" id="delModal">
+  <div class="mbox">
+    <div class="m-icon">🗑️</div>
+    <h3>Delete Product?</h3>
+    <p id="delMsg">This cannot be undone.</p>
+    <div class="m-acts">
+      <button class="b-cancel" onclick="closeModal()">Cancel</button>
+      <form id="delForm" method="POST">
+        <input type="hidden" name="_method" value="DELETE">
+        <button type="submit" class="b-confirm">Yes, Delete</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function confirmDel(id,name){
+  document.getElementById('delMsg').textContent='Delete "'+name+'"? This cannot be undone.';
+  document.getElementById('delForm').action='/admin/products/'+id+'/delete';
+  document.getElementById('delModal').classList.add('active');
+}
+function closeModal(){document.getElementById('delModal').classList.remove('active');}
+document.getElementById('delModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+function filterTable(q){
+  q=q.toLowerCase();
+  document.querySelectorAll('#pt tbody tr').forEach(r=>r.style.display=r.textContent.toLowerCase().includes(q)?'':'none');
+}
+</script>
+</body>
+</html>
