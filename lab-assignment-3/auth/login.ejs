@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Daraz Clone</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+      .auth-container { max-width: 400px; margin: 50px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+      .auth-container h2 { text-align: center; margin-bottom: 20px; }
+      .form-group { margin-bottom: 15px; }
+      .form-group label { display: block; margin-bottom: 5px; }
+      .form-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+      .btn { width: 100%; padding: 10px; background: #f57224; color: white; border: none; border-radius: 4px; cursor: pointer; }
+      .btn:hover { background: #d0611e; }
+      .auth-links { text-align: center; margin-top: 15px; }
+      .alert { padding: 10px; margin-bottom: 15px; border-radius: 4px; }
+      .alert-success { background: #d4edda; color: #155724; }
+      .alert-error { background: #f8d7da; color: #721c24; }
+  </style>
+</head>
+<body>
+    <header>
+        <a class="logo" href="/" style="color:white;text-decoration:none;">Daraz</a>
+        <nav id="nav">
+            <a href="/">Home</a>
+            <a href="/products">Products</a>
+            <a href="/register">Register</a>
+        </nav>
+    </header>
+
+    <div class="auth-container">
+        <h2>Login</h2>
+        
+        <% if (success_msg && success_msg.length > 0) { %>
+            <div class="alert alert-success"><%= success_msg %></div>
+        <% } %>
+        <% if (error_msg && error_msg.length > 0) { %>
+            <div class="alert alert-error"><%= error_msg %></div>
+        <% } %>
+        <% if (error && error.length > 0) { %>
+            <div class="alert alert-error"><%= error %></div>
+        <% } %>
+
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn">Login</button>
+        </form>
+        <div class="auth-links">
+            <p>Don't have an account? <a href="/register">Register</a></p>
+        </div>
+    </div>
+</body>
+</html>
