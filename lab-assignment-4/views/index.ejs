@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daraz Clone</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<header>
+    <div class="logo">Daraz</div>
+    <input type="text" placeholder="Search in Daraz">
+    <button class="hamburger" onclick="toggleMenu()">☰</button>
+    <nav id="nav">
+        <a href="/">Home</a>
+        <a href="/products">Products</a>
+        
+        <% if (currentUser) { %>
+            <% if (currentUser.role === 'admin') { %>
+                <a href="/admin">Admin</a>
+            <% } %>
+            <a href="/profile">My Profile</a>
+            <a href="/logout">Logout</a>
+        <% } else { %>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        <% } %>
+    </nav>
+</header>
+
+<% if (success_msg && success_msg.length > 0) { %>
+    <div style="background-color: #d4edda; color: #155724; padding: 10px; text-align: center;">
+        <%= success_msg %>
+    </div>
+<% } %>
+<% if (error_msg && error_msg.length > 0) { %>
+    <div style="background-color: #f8d7da; color: #721c24; padding: 10px; text-align: center;">
+        <%= error_msg %>
+    </div>
+<% } %>
+
+<section class="offers">
+    <h1>Big Sale Today 🔥 </h1>
+    <p>Up to 50% off</p>
+</section>
+
+<!-- Featured Deals — AJAX populated -->
+<section class="ajax-section">
+    <h2 class="section-title">🔥 Featured Deals</h2>
+    <div id="featured-deals-grid" class="products-grid">
+        <div class="loading-spinner"><div class="spinner"></div><p>Loading deals…</p></div>
+    </div>
+</section>
+
+<!-- All Products Grid -->
+<section class="products-section">
+    <h2 class="section-title">All Products</h2>
+    <div class="products-grid">
+
+        <div class="product-card">
+            <div class="card-img">👗</div>
+            <h3>Women Kurta</h3>
+            <p class="category">Clothing</p>
+            <div class="price-row">
+                <span class="price">Rs. 1,299</span>
+                <span class="old-price">Rs. 2,500</span>
+                <span class="discount">-48%</span>
+            </div>
+            <button class="add-cart">Add to Cart</button>
+        </div>
+
+        <div class="product-card">
+            <div class="card-img">💻</div>
+            <h3>HP Laptop 15</h3>
+            <p class="category">Electronics</p>
+            <div class="price-row">
+                <span class="price">Rs. 89,000</span>
+                <span class="old-price">Rs. 110,000</span>
+                <span class="discount">-19%</span>
+            </div>
+            <button class="add-cart">Add to Cart</button>
+        </div>
+
+        <div class="product-card">
+            <div class="card-img">🎧</div>
+            <h3>Sony WH-1000XM5</h3>
+            <p class="category">Audio</p>
+            <div class="price-row">
+                <span class="price">Rs. 34,500</span>
+                <span class="old-price">Rs. 45,000</span>
+                <span class="discount">-23%</span>
+            </div>
+            <button class="add-cart">Add to Cart</button>
+        </div>
+
+        <div class="product-card">
+            <div class="card-img">⌚</div>
+            <h3>Smart Watch Pro</h3>
+            <p class="category">Wearables</p>
+            <div class="price-row">
+                <span class="price">Rs. 8,499</span>
+                <span class="old-price">Rs. 12,000</span>
+                <span class="discount">-29%</span>
+            </div>
+            <button class="add-cart">Add to Cart</button>
+        </div>
+
+        <div class="product-card">
+            <div class="card-img">🎮</div>
+            <h3>PS5 Controller</h3>
+            <p class="category">Gaming</p>
+            <div class="price-row">
+                <span class="price">Rs. 15,999</span>
+                <span class="old-price">Rs. 19,999</span>
+                <span class="discount">-20%</span>
+            </div>
+            <button class="add-cart">Add to Cart</button>
+        </div>
+
+        <div class="product-card">
+            <div class="card-img">👜</div>
+            <h3>Leather Handbag</h3>
+            <p class="category">Accessories</p>
+            <div class="price-row">
+                <span class="price">Rs. 3,200</span>
+                <span class="old-price">Rs. 5,500</span>
+                <span class="discount">-42%</span>
+            </div>
+            <button class="add-cart">Add to Cart</button>
+        </div>
+
+        <div class="product-card">
+            <div class="card-img">🏋️</div>
+            <h3>Dumbbell Set (20kg)</h3>
+            <p class="category">Sports</p>
+            <div class="price-row">
+                <span class="price">Rs. 4,500</span>
+                <span class="old-price">Rs. 7,000</span>
+                <span class="discount">-36%</span>
+            </div>
+            <button class="add-cart">Add to Cart</button>
+        </div>
+
+        <div class="product-card">
+            <div class="card-img">🍳</div>
+            <h3>Non-Stick Pan Set</h3>
+            <p class="category">Kitchen</p>
+            <div class="price-row">
+                <span class="price">Rs. 2,100</span>
+                <span class="old-price">Rs. 3,800</span>
+                <span class="discount">-45%</span>
+            </div>
+            <button class="add-cart">Add to Cart</button>
+        </div>
+
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 Daraz Clone</p>
+</footer>
+
+<!-- Quick View Modal -->
+<div id="qv-modal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-box">
+        <button class="modal-close" id="modal-close-btn" aria-label="Close">✕</button>
+        <div class="modal-body">
+            <img id="modal-img" src="" alt="Product Image">
+            <div class="modal-info">
+                <span id="modal-category" class="modal-cat"></span>
+                <h2 id="modal-title"></h2>
+                <div class="modal-rating">
+                    <span id="modal-stars"></span>
+                    <span id="modal-rating-val" class="rating-val"></span>
+                    <span id="modal-rating-count" class="rating-count"></span>
+                </div>
+                <p id="modal-price" class="modal-price"></p>
+                <p id="modal-desc" class="modal-desc"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
