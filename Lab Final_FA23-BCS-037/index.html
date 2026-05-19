@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daraz Clone</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<header>
+    <div class="logo">Daraz</div>
+    <input type="text" placeholder="Search in Daraz">
+    <button class="hamburger" onclick="toggleMenu()">☰</button>
+    <nav id="nav">
+        <a href="/">Home</a>
+        <a href="/products">Products</a>
+        <a href="/admin">Admin</a>
+        <a href="/login">Login</a>
+        <a href="#" id="cart-icon">🛒 Cart (<span id="cart-count">0</span>)</a>
+    </nav>
+</header>
+
+<!-- Shopping Cart Sidebar -->
+<div id="cart-sidebar" class="cart-sidebar">
+    <div class="cart-header">
+        <h3>Your Cart</h3>
+        <button id="close-cart">✕</button>
+    </div>
+    <div id="cart-items" class="cart-items">
+        <p class="empty-cart">Your cart is empty.</p>
+    </div>
+    <div class="cart-footer">
+        <div class="cart-total">Total: $<span id="cart-total-price">0.00</span></div>
+        <button id="checkout-btn" class="checkout-btn">Checkout</button>
+    </div>
+</div>
+
+<section class="offers">
+    <h1>Big Sale Today 🔥 </h1>
+    <p>Up to 50% off</p>
+</section>
+
+<!-- Featured Deals — AJAX populated -->
+<section class="ajax-section">
+    <h2 class="section-title">🔥 Featured Deals</h2>
+    <div id="featured-deals-grid" class="products-grid">
+        <div class="loading-spinner"><div class="spinner"></div><p>Loading deals…</p></div>
+    </div>
+</section>
+
+<!-- All Products Grid -->
+<section class="products-section">
+    <h2 class="section-title">All Products</h2>
+    <div id="all-products-grid" class="products-grid">
+        <div class="loading-spinner"><div class="spinner"></div><p>Loading products…</p></div>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 Daraz Clone</p>
+</footer>
+
+<!-- Quick View Modal -->
+<div id="qv-modal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-box">
+        <button class="modal-close" id="modal-close-btn" aria-label="Close">✕</button>
+        <div class="modal-body">
+            <img id="modal-img" src="" alt="Product Image">
+            <div class="modal-info">
+                <span id="modal-category" class="modal-cat"></span>
+                <h2 id="modal-title"></h2>
+                <div class="modal-rating">
+                    <span id="modal-stars"></span>
+                    <span id="modal-rating-val" class="rating-val"></span>
+                    <span id="modal-rating-count" class="rating-count"></span>
+                </div>
+                <p id="modal-price" class="modal-price"></p>
+                <p id="modal-desc" class="modal-desc"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

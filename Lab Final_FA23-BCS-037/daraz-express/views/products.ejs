@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Products — Daraz Clone</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0f0f1a;
+      --surface:   #1a1a2e;
+      --card:      #16213e;
+      --accent:    #e63946;
+      --accent2:   #f4a261;
+      --text:      #e2e8f0;
+      --muted:     #94a3b8;
+      --border:    rgba(255,255,255,0.08);
+      --radius:    14px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #e63946 0%, #c1121f 100%);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(230,57,70,0.4);
+    }
+    header .logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -1px;
+      text-decoration: none;
+    }
+    header nav { margin-left: auto; display: flex; gap: 1.5rem; }
+    header nav a {
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: color .2s;
+    }
+    header nav a:hover, header nav a.active { color: #fff; }
+
+    /* ── Page layout ── */
+    .page-wrapper {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .page-title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.25rem;
+      background: linear-gradient(135deg, #fff 40%, var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .page-sub {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    /* ── Filter bar ── */
+    .filter-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-end;
+    }
+    .filter-group { display: flex; flex-direction: column; gap: 0.35rem; flex: 1 1 160px; }
+    .filter-group label { font-size: 0.75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+    .filter-group input,
+    .filter-group select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 0.6rem 0.85rem;
+      font-family: inherit;
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .filter-group input:focus,
+    .filter-group select:focus { border-color: var(--accent); }
+    .filter-group select option { background: var(--surface); }
+
+    .btn-filter {
+      padding: 0.65rem 1.5rem;
+      background: linear-gradient(135deg, var(--accent), #c1121f);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .2s, transform .15s;
+      align-self: flex-end;
+    }
+    .btn-filter:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .btn-reset {
+      padding: 0.65rem 1.2rem;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      transition: color .2s, border-color .2s;
+      align-self: flex-end;
+    }
+    .btn-reset:hover { color: var(--text); border-color: var(--muted); }
+
+    /* ── Results bar ── */
+    .results-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .results-count { font-size: 0.875rem; color: var(--muted); }
+    .results-count strong { color: var(--text); }
+
+    .sort-group { display: flex; align-items: center; gap: 0.5rem; }
+    .sort-group label { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+    .sort-group select {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 0.45rem 0.75rem;
+      font-family: inherit;
+      font-size: 0.82rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* ── Product grid ── */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .product-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform .25s, box-shadow .25s;
+      position: relative;
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+    }
+
+    .card-img-wrap { position: relative; overflow: hidden; }
+    .card-img-wrap img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+      transition: transform .4s;
+    }
+    .product-card:hover .card-img-wrap img { transform: scale(1.05); }
+
+    .cat-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(6px);
+      color: var(--accent2);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .stock-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+    .in-stock  { background: rgba(34,197,94,0.2);  color: #4ade80; }
+    .low-stock { background: rgba(251,146,60,0.2); color: #fb923c; }
+    .no-stock  { background: rgba(239,68,68,0.2);  color: #f87171; }
+
+    .card-body { padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+    .card-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--text);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-rating {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+    }
+    .stars { color: #f59e0b; letter-spacing: -1px; font-size: 0.85rem; }
+    .rating-num { color: var(--muted); }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+    .card-price {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .btn-cart {
+      background: linear-gradient(135deg, var(--accent), #c1121f);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.45rem 1rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .2s, transform .15s;
+    }
+    .btn-cart:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--muted);
+    }
+    .empty-state .icon { font-size: 3.5rem; margin-bottom: 1rem; }
+    .empty-state h3 { font-size: 1.25rem; color: var(--text); margin-bottom: 0.5rem; }
+
+    /* ── Pagination ── */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      padding-bottom: 3rem;
+    }
+    .pagination a,
+    .pagination span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 40px;
+      height: 40px;
+      padding: 0 0.75rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background .2s, color .2s;
+    }
+    .pagination a {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .pagination a:hover { background: var(--card); border-color: var(--accent); color: var(--accent); }
+    .pagination .active {
+      background: linear-gradient(135deg, var(--accent), #c1121f);
+      color: #fff;
+      border: none;
+      font-weight: 700;
+    }
+    .pagination .disabled {
+      background: var(--surface);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 0 1rem; }
+      .filter-card { padding: 1rem; }
+      .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: .75rem; }
+      .card-img-wrap img { height: 150px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="/">Daraz</a>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/products" class="active">Products</a>
+    <% if (currentUser) { %>
+        <% if (currentUser.role === 'admin') { %>
+            <a href="/admin">Admin</a>
+        <% } %>
+        <a href="/profile">My Profile</a>
+        <a href="/logout">Logout</a>
+    <% } else { %>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+    <% } %>
+  </nav>
+</header>
+
+<% if (success_msg && success_msg.length > 0) { %>
+  <div style="background-color: #d4edda; color: #155724; padding: 10px; text-align: center;">
+      <%= success_msg %>
+  </div>
+<% } %>
+<% if (error_msg && error_msg.length > 0) { %>
+  <div style="background-color: #f8d7da; color: #721c24; padding: 10px; text-align: center;">
+      <%= error_msg %>
+  </div>
+<% } %>
+
+<div class="page-wrapper">
+  <h1 class="page-title">Product Catalog</h1>
+  <p class="page-sub">Explore our full collection — filter, search & discover great deals.</p>
+
+  <!-- ── Filter Form ── -->
+  <form class="filter-card" method="GET" action="/products" id="filterForm">
+    <div class="filter-group" style="flex: 2 1 240px;">
+      <label for="search">Search</label>
+      <input type="text" id="search" name="search"
+             placeholder="Search by product name…"
+             value="<%= filters.search %>">
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Category</label>
+      <select id="category" name="category">
+        <option value="">All Categories</option>
+        <% categories.forEach(cat => { %>
+          <option value="<%= cat %>" <%= filters.category === cat ? 'selected' : '' %>><%= cat %></option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="minPrice">Min Price ($)</label>
+      <input type="number" id="minPrice" name="minPrice" min="0"
+             placeholder="0"
+             value="<%= filters.minPrice %>">
+    </div>
+
+    <div class="filter-group">
+      <label for="maxPrice">Max Price ($)</label>
+      <input type="number" id="maxPrice" name="maxPrice" min="0"
+             placeholder="Any"
+             value="<%= filters.maxPrice %>">
+    </div>
+
+    <!-- keep sort when re-filtering -->
+    <input type="hidden" name="sort" value="<%= filters.sort %>">
+
+    <button type="submit" class="btn-filter">🔍 Apply Filters</button>
+    <a href="/products" class="btn-reset">✕ Reset</a>
+  </form>
+
+  <!-- ── Results bar ── -->
+  <div class="results-bar">
+    <p class="results-count">
+      Showing <strong><%= products.length %></strong> of <strong><%= totalProducts %></strong> products
+      <% if (filters.search) { %> for "<strong><%= filters.search %></strong>"<% } %>
+    </p>
+
+    <div class="sort-group">
+      <label for="sortSelect">Sort by:</label>
+      <select id="sortSelect" onchange="applySort(this.value)">
+        <option value="default"              <%= filters.sort === 'default'      ? 'selected' : '' %>>Default</option>
+        <option value="price_asc"            <%= filters.sort === 'price_asc'    ? 'selected' : '' %>>Price: Low → High</option>
+        <option value="price_desc"           <%= filters.sort === 'price_desc'   ? 'selected' : '' %>>Price: High → Low</option>
+        <option value="rating_desc"          <%= filters.sort === 'rating_desc'  ? 'selected' : '' %>>Top Rated</option>
+        <option value="name_asc"             <%= filters.sort === 'name_asc'     ? 'selected' : '' %>>Name A–Z</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ── Product Grid ── -->
+  <% if (products.length === 0) { %>
+    <div class="empty-state">
+      <div class="icon">🔍</div>
+      <h3>No products found</h3>
+      <p>Try adjusting your filters or search term.</p>
+    </div>
+  <% } else { %>
+    <div class="products-grid">
+      <% products.forEach(p => { %>
+        <%
+          const fullStars  = Math.round(p.rating);
+          let   starStr    = '';
+          for (let i = 1; i <= 5; i++) starStr += (i <= fullStars ? '★' : '☆');
+
+          let stockClass = 'in-stock',  stockLabel = 'In Stock';
+          if (p.stock === 0)       { stockClass = 'no-stock';  stockLabel = 'Out of Stock'; }
+          else if (p.stock <= 10)  { stockClass = 'low-stock'; stockLabel = 'Low Stock'; }
+        %>
+        <div class="product-card">
+          <div class="card-img-wrap">
+            <img src="<%= p.image %>" alt="<%= p.name %>" loading="lazy">
+            <span class="cat-badge"><%= p.category %></span>
+            <span class="stock-badge <%= stockClass %>"><%= stockLabel %></span>
+          </div>
+          <div class="card-body">
+            <p class="card-name"><%= p.name %></p>
+            <p class="card-desc"><%= p.description %></p>
+            <div class="card-rating">
+              <span class="stars"><%= starStr %></span>
+              <span class="rating-num"><%= p.rating.toFixed(1) %></span>
+            </div>
+            <div class="card-footer">
+              <span class="card-price">$<%= p.price.toLocaleString() %></span>
+              <button class="btn-cart">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <!-- ── Pagination ── -->
+  <% if (totalPages > 1) { %>
+    <nav class="pagination" aria-label="Pagination">
+
+      <!-- Previous -->
+      <% if (currentPage > 1) { %>
+        <a href="<%= buildQuery(currentPage - 1) %>">‹ Prev</a>
+      <% } else { %>
+        <span class="disabled">‹ Prev</span>
+      <% } %>
+
+      <!-- Page numbers -->
+      <% for (let p = 1; p <= totalPages; p++) { %>
+        <% if (p === currentPage) { %>
+          <span class="active"><%= p %></span>
+        <% } else if (p === 1 || p === totalPages || (p >= currentPage - 2 && p <= currentPage + 2)) { %>
+          <a href="<%= buildQuery(p) %>"><%= p %></a>
+        <% } else if (p === currentPage - 3 || p === currentPage + 3) { %>
+          <span class="disabled">…</span>
+        <% } %>
+      <% } %>
+
+      <!-- Next -->
+      <% if (currentPage < totalPages) { %>
+        <a href="<%= buildQuery(currentPage + 1) %>">Next ›</a>
+      <% } else { %>
+        <span class="disabled">Next ›</span>
+      <% } %>
+
+    </nav>
+  <% } %>
+</div>
+
+<footer>© 2026 Daraz Clone — Dynamic Product Catalog</footer>
+
+<script>
+  // Preserve all filters when changing sort
+  function applySort(val) {
+    const url  = new URL(window.location.href);
+    url.searchParams.set('sort', val);
+    url.searchParams.set('page', '1');
+    window.location.href = url.toString();
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'Daraz Admin' %></title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0b0c15;--surface:#13141f;--card:#1a1b2e;
+      --accent:#e63946;--green:#4ade80;--yellow:#fbbf24;
+      --red:#f87171;--blue:#60a5fa;--purple:#a78bfa;
+      --text:#e2e8f0;--muted:#64748b;
+      --border:rgba(255,255,255,.07);--sidebar:230px;--r:12px
+    }
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+    .sidebar{width:var(--sidebar);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50}
+    .s-logo{padding:1.4rem 1.2rem;font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,var(--accent),#f4a261);-webkit-background-clip:text;-webkit-text-fill-color:transparent;border-bottom:1px solid var(--border)}
+    .s-label{font-size:.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding:1.1rem 1.2rem .35rem}
+    .sidebar nav{padding:.2rem .7rem;display:flex;flex-direction:column;gap:2px}
+    .sidebar nav a{display:flex;align-items:center;gap:.6rem;padding:.6rem .75rem;border-radius:8px;color:var(--muted);text-decoration:none;font-size:.85rem;font-weight:500;transition:background .2s,color .2s}
+    .sidebar nav a:hover{background:var(--card);color:var(--text)}
+    .sidebar nav a.active{background:rgba(230,57,70,.15);color:var(--accent)}
+    .s-foot{margin-top:auto;padding:1.1rem;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px}
+    .s-foot a{color:var(--muted);font-size:.82rem;text-decoration:none;display:flex;align-items:center;gap:.5rem}
+    .s-foot a:hover{color:var(--text)}
+    .main{margin-left:var(--sidebar);flex:1;padding:2rem}
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="s-logo">⚡ Daraz Admin</div>
+  <div class="s-label">Menu</div>
+  <nav>
+    <a href="/admin" class="<%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? 'active' : '' %>">📊 Dashboard</a>
+    <a href="/sales"  class="<%= typeof activePage !== 'undefined' && activePage === 'sales'     ? 'active' : '' %>">💹 Sales</a>
+    <a href="/admin/products/new">➕ Add Product</a>
+    <a href="/products" target="_blank">🛍️ View Store</a>
+  </nav>
+  <div class="s-foot">
+    <a href="/">🏠 Back to Home</a>
+    <a href="/logout" style="color:var(--red)">🚪 Logout</a>
+  </div>
+</aside>
+
+<main class="main">
+  <%- body %>
+</main>
+
+</body>
+</html>

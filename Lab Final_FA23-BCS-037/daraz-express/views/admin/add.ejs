@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Add Product — Daraz Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#0b0c15;--surface:#13141f;--card:#1a1b2e;--accent:#e63946;--green:#4ade80;--red:#f87171;--text:#e2e8f0;--muted:#64748b;--border:rgba(255,255,255,.07);--sidebar:230px;--r:12px}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+    .sidebar{width:var(--sidebar);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50}
+    .s-logo{padding:1.4rem 1.2rem;font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,var(--accent),#f4a261);-webkit-background-clip:text;-webkit-text-fill-color:transparent;border-bottom:1px solid var(--border)}
+    .s-label{font-size:.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding:1.1rem 1.2rem .35rem}
+    .sidebar nav{padding:.2rem .7rem;display:flex;flex-direction:column;gap:2px}
+    .sidebar nav a{display:flex;align-items:center;gap:.6rem;padding:.6rem .75rem;border-radius:8px;color:var(--muted);text-decoration:none;font-size:.85rem;font-weight:500;transition:background .2s,color .2s}
+    .sidebar nav a:hover{background:var(--card);color:var(--text)}
+    .sidebar nav a.active{background:rgba(230,57,70,.15);color:var(--accent)}
+    .s-foot{margin-top:auto;padding:1.1rem;border-top:1px solid var(--border)}
+    .s-foot a{color:var(--muted);font-size:.82rem;text-decoration:none;display:flex;align-items:center;gap:.5rem}
+    .s-foot a:hover{color:var(--text)}
+    .main{margin-left:var(--sidebar);flex:1;padding:2rem;max-width:800px}
+    .topbar{display:flex;align-items:center;gap:1rem;margin-bottom:1.75rem}
+    .back-btn{color:var(--muted);text-decoration:none;font-size:.85rem;display:flex;align-items:center;gap:.35rem;transition:color .2s}
+    .back-btn:hover{color:var(--text)}
+    h1{font-size:1.55rem;font-weight:800}
+    .flash{padding:.7rem 1.2rem;border-radius:8px;margin-bottom:1.2rem;font-size:.875rem;font-weight:500}
+    .flash.error{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red)}
+    .form-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:2rem}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+    .form-group{display:flex;flex-direction:column;gap:.4rem}
+    .form-group.full{grid-column:1/-1}
+    label{font-size:.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+    input,select,textarea{background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:.65rem .9rem;font-family:inherit;font-size:.9rem;outline:none;transition:border-color .2s;width:100%}
+    input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+    select option{background:var(--surface)}
+    textarea{resize:vertical;min-height:90px}
+    .file-zone{border:2px dashed var(--border);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:border-color .2s;position:relative}
+    .file-zone:hover{border-color:var(--accent)}
+    .file-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+    .file-zone .fz-icon{font-size:2rem;margin-bottom:.4rem}
+    .file-zone p{color:var(--muted);font-size:.82rem}
+    #previewWrap{margin-top:.75rem;display:none}
+    #previewWrap img{max-height:120px;border-radius:8px;border:1px solid var(--border)}
+    .form-actions{display:flex;gap:.75rem;margin-top:1.5rem}
+    .btn{padding:.65rem 1.4rem;border-radius:8px;font-size:.875rem;font-weight:600;cursor:pointer;border:none;transition:opacity .2s,transform .15s;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem}
+    .btn:hover{opacity:.88;transform:translateY(-1px)}
+    .btn-primary{background:linear-gradient(135deg,var(--accent),#c1121f);color:#fff}
+    .btn-ghost{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+  </style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="s-logo">⚡ Daraz Admin</div>
+  <div class="s-label">Menu</div>
+  <nav>
+    <a href="/admin">📊 Dashboard</a>
+    <a href="/sales">💹 Sales</a>
+    <a href="/admin/products/new" class="active">➕ Add Product</a>
+    <a href="/products" target="_blank">🛍️ View Store</a>
+  </nav>
+  <div class="s-foot"><a href="/">🏠 Back to Home</a></div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <a href="/admin" class="back-btn">← Back</a>
+    <h1>Add New Product</h1>
+  </div>
+
+  <% if (locals.flash) { %>
+    <div class="flash error"><%= flash.message %></div>
+  <% } %>
+
+  <div class="form-card">
+    <form method="POST" action="/admin/products" enctype="multipart/form-data">
+      <div class="form-grid">
+
+        <div class="form-group full">
+          <label for="name">Product Name *</label>
+          <input type="text" id="name" name="name" placeholder="e.g. Samsung Galaxy S24" required value="<%= locals.old ? old.name : '' %>">
+        </div>
+
+        <div class="form-group">
+          <label for="price">Price (USD) *</label>
+          <input type="number" id="price" name="price" min="0" step="0.01" placeholder="0.00" required value="<%= locals.old ? old.price : '' %>">
+        </div>
+
+        <div class="form-group">
+          <label for="category">Category *</label>
+          <select id="category" name="category" required>
+            <option value="">— Select —</option>
+            <% ['Electronics','Fashion','Home','Sports','Gaming','Beauty','Books','Other'].forEach(c=>{ %>
+              <option value="<%= c %>" <%= (locals.old&&old.category===c)?'selected':'' %>><%= c %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="rating">Rating (0–5)</label>
+          <input type="number" id="rating" name="rating" min="0" max="5" step="0.1" placeholder="4.0" value="<%= locals.old ? old.rating : '4.0' %>">
+        </div>
+
+        <div class="form-group">
+          <label for="stock">Stock Quantity *</label>
+          <input type="number" id="stock" name="stock" min="0" placeholder="0" required value="<%= locals.old ? old.stock : '' %>">
+        </div>
+
+        <div class="form-group full">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" placeholder="Describe the product…"><%= locals.old ? old.description : '' %></textarea>
+        </div>
+
+        <div class="form-group full">
+          <label>Product Image</label>
+          <div class="file-zone" onclick="document.getElementById('imgFile').click()">
+            <input type="file" id="imgFile" name="image" accept="image/*" onchange="previewImg(this)">
+            <div class="fz-icon">📷</div>
+            <p>Click to upload or drop an image here<br><small>JPG, PNG, WEBP — max 5MB</small></p>
+          </div>
+          <div id="previewWrap"><img id="preview" src="" alt="Preview"></div>
+        </div>
+
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">✅ Save Product</button>
+        <a href="/admin" class="btn btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</main>
+
+<script>
+function previewImg(input){
+  if(input.files&&input.files[0]){
+    const reader=new FileReader();
+    reader.onload=e=>{
+      document.getElementById('preview').src=e.target.result;
+      document.getElementById('previewWrap').style.display='block';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+</script>
+</body>
+</html>
